@@ -1,0 +1,157 @@
+@import "tailwindcss";
+/* 🌑 DARK FEAR BACKGROUND */
+.fear-bg {
+  background: radial-gradient(circle at 50% 50%, #4a0000, #000000 75%);
+  background-size: 200% 200%;
+  animation: bgMove 10s ease-in-out infinite;
+}
+
+@keyframes bgMove {
+  0% { background-position: 50% 50%; }
+  50% { background-position: 30% 70%; }
+  100% { background-position: 50% 50%; }
+}
+
+/* 🩸 BLOOD RED MIST */
+.red-mist {
+  position: absolute;
+  top: -20%;
+  left: -20%;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(255,0,0,0.15), transparent 60%);
+  filter: blur(120px);
+  animation: mistMove 9s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes mistMove {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(8%, 12%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* 🔺 FLOATING DANGER TRIANGLE SHADOW */
+.shadow-shape {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  background: rgba(0, 0, 0, 0.35);
+  clip-path: polygon(50% 0%, 100% 100%, 0 100%);
+  filter: blur(40px);
+  animation: shadowFloat 12s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes shadowFloat {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(-20px, -40px) rotate(15deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* ⚠️ DANGER PULSE GLOW */
+.danger-pulse {
+  animation: dangerPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes dangerPulse {
+  0% { box-shadow: 0 0 10px rgba(255,0,0,0.4); }
+  50% { box-shadow: 0 0 22px rgba(255,0,0,0.9); }
+  100% { box-shadow: 0 0 10px rgba(255,0,0,0.4); }
+}
+
+/* ⭐ CARD ENTRY ANIMATION */
+.cardFade {
+  animation: fadeSlide 0.8s ease-out forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+@keyframes fadeSlide {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ⭐ BUTTON GLOW HOVER */
+.btnGlow {
+  transition: 0.3s ease;
+}
+
+.btnGlow:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 15px rgba(255, 20, 20, 0.8);
+}
+
+
+/* ========================= */
+/* 🔥 CAMERA SHAKE EFFECT */
+/* ========================= */
+.shake-screen {
+  animation: shake 0.6s ease-in-out 0s 1;
+}
+
+@keyframes shake {
+  0% { transform: translate(0px, 0px) rotate(0deg); }
+  20% { transform: translate(-10px, 8px) rotate(-2deg); }
+  40% { transform: translate(10px, -8px) rotate(2deg); }
+  60% { transform: translate(-8px, 10px) rotate(-1deg); }
+  80% { transform: translate(8px, -10px) rotate(1deg); }
+  100% { transform: translate(0px, 0px) rotate(0deg); }
+}
+
+/* ========================= */
+/* 🔥 RED GLOW PULSE*/
+/* ========================= */
+.red-glow {
+  animation: redPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes redPulse {
+  0% { box-shadow: 0 0 10px rgba(255,0,0,0.4); }
+  50% { box-shadow: 0 0 35px rgba(255,0,0,0.8); }
+  100% { box-shadow: 0 0 10px rgba(255,0,0,0.4); }
+}
+
+/* ========================= */
+/* 🔥 FLICKER EFFECT (SQUID GAME) */
+/* ========================= */
+.flicker {
+  animation: flickerAnim 0.35s infinite;
+}
+
+@keyframes flickerAnim {
+  0% { opacity: 1; }
+  20% { opacity: 0.6; }
+  40% { opacity: 0.2; }
+  60% { opacity: 0.7; }
+  80% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* ========================= */
+/* 🔥 FULL RED FLASH */
+/* ========================= */
+.red-flash {
+  animation: flashRed 0.3s ease-in-out 3;
+}
+
+@keyframes flashRed {
+  0% { background-color: rgba(255,0,0,0.1); }
+  50% { background-color: rgba(255,0,0,0.4); }
+  100% { background-color: rgba(255,0,0,0.1); }
+}
+
+/* ========================= */
+/* 🔥 COUNTDOWN POP */
+/* ========================= */
+.countdown-pop {
+  animation: popScale 0.7s ease forwards;
+}
+
+@keyframes popScale {
+  0% { transform: scale(0.2); opacity: 0; }
+  50% { transform: scale(1.5); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
