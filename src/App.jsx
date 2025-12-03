@@ -322,9 +322,9 @@ useEffect(() => {
                 </div>
                 <button
                   onClick={handleEnter}
-                  className="group relative px-12 py-5 text-xl font-bold bg-gradient-to-r from-red-600 to-red-800 rounded-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-red-500/50"
+                  className="group relative px-12 py-5 text-xl font-bold bg-gradient-to-r from-red-600 to-red-800 rounded-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-red-500/50 cursor-pointer"
                 >
-                  <span className="relative z-10 cursor-pointer">ENTER PLAYGROUND</span>
+                  <span className="relative z-10 ">ENTER PLAYGROUND</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </button>
               </div>
@@ -342,9 +342,9 @@ useEffect(() => {
                 </div>
                 <button
                   onClick={handleStartCountdown}
-                  className="group relative px-12 py-5 text-xl font-bold bg-gradient-to-r from-green-600 to-green-800 rounded-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50"
+                  className="group relative px-12 py-5 text-xl font-bold bg-gradient-to-r from-green-600 to-green-800 rounded-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 cursor-pointer"
                 >
-                  <span className="relative z-10 flex items-center gap-3 cursor-pointer">
+                  <span className="relative z-10 flex items-center gap-3 ">
                     <FaSkull className="animate-pulse" />
                     ENTER 
                   </span>
