@@ -413,7 +413,7 @@ useEffect(() => {
   {loadingAI && (
     <div className="flex items-center gap-3 text-yellow-400">
       <FaSpinner className="animate-spin text-xl" />
-      <span className="font-medium">AGENTS PROCESSING...</span>
+      <span className="font-medium">PLAYERS PROCESSING...</span>
     </div>
   )}
 
