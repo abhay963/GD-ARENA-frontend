@@ -105,12 +105,14 @@ useEffect(() => {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/start-gd`)
 ;
       setTopic(res.data.topic);
-      setHistory([
-        { speaker: "Agent 1", text: res.data.agents.agent1, avatar: "🤖" },
-        { speaker: "Agent 2", text: res.data.agents.agent2, avatar: "🎭" },
-      ]);
-      speakText(res.data.agents.agent1);
-      speakText(res.data.agents.agent2);
+  setHistory([
+  { speaker: "Player 1", text: res.data.agents["Player 1"], avatar: "🤖" },
+  { speaker: "Player 2", text: res.data.agents["Player 2"], avatar: "🎭" },
+]);
+
+      speakText(res.data.agents["Player 1"]);
+speakText(res.data.agents["Player 2"]);
+
       if (audioRef.current) audioRef.current.pause();
       setFlash(false);
       setShake(false);
@@ -126,20 +128,26 @@ useEffect(() => {
     setLoadingAI(true);
 
     try {
-      const ai = await axios.post(`${import.meta.env.VITE_API_URL}/api/gd`, {
-        userSpeech,
-        topic,
-        history,
-      });
+     const ai = await axios.post(`${import.meta.env.VITE_API_URL}/api/gd`, {
+  userSpeech,
+  topic,
+  history: history.map(h => ({
+    ...h,
+    speaker: h.speaker.replace("Agent", "Player"),
+  })),
+});
 
-      setHistory((prev) => [
-        ...prev,
-        { speaker: "Agent 1", text: ai.data.agent1, avatar: "🤖" },
-        { speaker: "Agent 2", text: ai.data.agent2, avatar: "🎭" },
-      ]);
+setHistory((prev) => [
+  ...prev,
+  { speaker: "Player 1", text: ai.data["Player 1"], avatar: "🤖" },
+  { speaker: "Player 2", text: ai.data["Player 2"], avatar: "🎭" },
+]);
 
-      speakText(ai.data.agent1);
-      speakText(ai.data.agent2);
+speakText(ai.data["Player 1"]);
+speakText(ai.data["Player 2"]);
+
+
+
     } catch (error) {
       console.error("Failed to get AI response:", error);
     } finally {
