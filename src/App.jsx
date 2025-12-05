@@ -140,7 +140,7 @@ speakText(res.data.agents["Player 2"]);
 setHistory((prev) => [
   ...prev,
   { speaker: "Player 1", text: ai.data["Player 1"], avatar: "🤖" },
-  { speaker: "Player 2", text: ai.data["Player 2"], avatar: "🎭" },
+  { speaker: "Player 2", text: ai.data["Player 2"], avatar: "🤖" },
 ]);
 
 speakText(ai.data["Player 1"]);
