@@ -107,7 +107,7 @@ useEffect(() => {
       setTopic(res.data.topic);
   setHistory([
   { speaker: "Player 1", text: res.data.agents["Player 1"], avatar: "🤖" },
-  { speaker: "Player 2", text: res.data.agents["Player 2"], avatar: "🎭" },
+  { speaker: "Player 2", text: res.data.agents["Player 2"], avatar: "🤖" },
 ]);
 
       speakText(res.data.agents["Player 1"]);
