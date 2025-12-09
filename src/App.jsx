@@ -157,80 +157,77 @@ speakText(ai.data["Player 2"]);
 
   // Start continuous recognition. We add a small restart mechanism so browser auto-stops
   // on silence will be restarted — this ensures recognition stays ON until user presses STOP.
-  const startSpeaking = () => {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) {
-      alert("Speech recognition is not supported in your browser.");
-      return;
-    }
+ const startSpeaking = () => {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    alert("Speech recognition is not supported in your browser.");
+    return;
+  }
 
-    // reset any previous
-    transcriptRef.current = "";
-    if (recognitionRef.current) {
+  // ✨ IMPORTANT FIX: Stop agent TTS immediately
+  window.speechSynthesis.cancel();
+
+  // Also stop background music so user has clean audio
+  if (audioRef.current) {
+    audioRef.current.pause();
+  }
+
+  // Reset old recognition
+  transcriptRef.current = "";
+  if (recognitionRef.current) {
+    try {
+      recognitionRef.current._shouldRestart = false;
+      recognitionRef.current.onend = null;
+      recognitionRef.current.onerror = null;
+      recognitionRef.current.stop();
+    } catch (e) {}
+    recognitionRef.current = null;
+  }
+
+  const recognition = new SR();
+  recognitionRef.current = recognition;
+
+  recognition.lang = "en-US";
+  recognition.interimResults = true;
+  recognition.continuous = true;
+  recognition.maxAlternatives = 1;
+  recognition._shouldRestart = true;
+
+  recognition.onresult = (e) => {
+    for (let i = 0; i < e.results.length; i++) {
+      const result = e.results[i];
+      if (result.isFinal) {
+        transcriptRef.current =
+          (transcriptRef.current + " " + result[0].transcript).trim();
+      }
+    }
+  };
+
+  recognition.onerror = (ev) => {
+    console.error("Speech recognition error:", ev.error);
+  };
+
+  recognition.onend = () => {
+    if (recognition._shouldRestart) {
       try {
-        recognitionRef.current._shouldRestart = false;
-        recognitionRef.current.onend = null;
-        recognitionRef.current.onerror = null;
-        recognitionRef.current.stop();
+        recognition.start();
       } catch (e) {
-        // ignore
-      }
-      recognitionRef.current = null;
-    }
-
-    const recognition = new SR();
-    recognitionRef.current = recognition;
-
-    recognition.lang = "en-US";
-    recognition.interimResults = true;
-    recognition.continuous = true;
-    recognition.maxAlternatives = 1;
-
-    // Allow our code to restart recognition automatically onend when we still want to listen.
-    recognition._shouldRestart = true;
-
-    recognition.onresult = (e) => {
-      // accumulate final transcripts to transcriptRef.current
-      for (let i = 0; i < e.results.length; i++) {
-        const result = e.results[i];
-        const transcript = result[0].transcript;
-        if (result.isFinal) {
-          // append with a space
-          transcriptRef.current = (transcriptRef.current + " " + transcript).trim();
-        } else {
-          // interim available if you later want to show it in UI
-          // const interim = transcript;
-        }
-      }
-    };
-
-    recognition.onerror = (ev) => {
-      console.error("Speech recognition error:", ev.error);
-      // don't immediately stop listening — let onend handle restart logic
-    };
-
-    recognition.onend = () => {
-      // if we intend to keep listening, restart; otherwise end
-      if (recognition._shouldRestart) {
-        try {
-          recognition.start();
-        } catch (e) {
-          // some browsers might throw; mark not listening
-          setListening(false);
-        }
-      } else {
         setListening(false);
       }
-    };
-
-    try {
-      recognition.start();
-      setListening(true);
-    } catch (e) {
-      console.error("Failed to start recognition:", e);
+    } else {
       setListening(false);
     }
   };
+
+  try {
+    recognition.start();
+    setListening(true);
+  } catch (e) {
+    console.error("Failed to start recognition:", e);
+    setListening(false);
+  }
+};
+
 
   // STOP listening — stops recognition and then sends accumulated transcript to AI
   const stopListening = () => {
