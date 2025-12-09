@@ -17,45 +17,37 @@ export default function App() {
   const audioRef = useRef(null);
   const chatEndRef = useRef(null);
 
-  // Recognition instance and transcript storage
+  // Speech recognition references
   const recognitionRef = useRef(null);
-  const transcriptRef = useRef(""); // collects final transcripts while listening
+  const fullSpeechRef = useRef(""); // 🔥 stores entire speech safely
 
-  // Auto-scroll to bottom when history changes
-useEffect(() => {
-  if (chatEndRef.current) {
-    chatEndRef.current.scrollIntoView({
-      behavior: "smooth",
-      block: "end"
-    });
-  }
-}, [history]);
-
-
+  // Scroll to bottom every time history updates
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, [history]);
 
   const stopAllAudio = () => {
-  // Stop intro music
-  if (audioRef.current) {
-    audioRef.current.pause();
-    audioRef.current.currentTime = 0;
-  }
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    window.speechSynthesis.cancel();
+    if (recognitionRef.current) {
+      recognitionRef.current._shouldRestart = false;
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {}
+      recognitionRef.current = null;
+    }
+    fullSpeechRef.current = "";
+    setListening(false);
+  };
 
-  // Stop speech synthesis
-  window.speechSynthesis.cancel();
-
-  // Stop speech recognition
-  if (recognitionRef.current) {
-    recognitionRef.current._shouldRestart = false;
-    try {
-      recognitionRef.current.stop();
-    } catch (e) {}
-    recognitionRef.current = null;
-  }
-
-  transcriptRef.current = "";
-  setListening(false);
-};
- 
   const speakText = (text) => {
     try {
       const speech = new SpeechSynthesisUtterance(text);
@@ -72,9 +64,7 @@ useEffect(() => {
     setStep("audio");
     if (audioRef.current) {
       audioRef.current.loop = true;
-      audioRef.current.play().catch(() => {
-        /* autoplay may be blocked; user will click to play later */
-      });
+      audioRef.current.play().catch(() => {});
     }
   };
 
@@ -102,16 +92,16 @@ useEffect(() => {
 
   const startGD = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/start-gd`)
-;
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/start-gd`);
       setTopic(res.data.topic);
-  setHistory([
-  { speaker: "Player 1", text: res.data.agents["Player 1"], avatar: "🤖" },
-  { speaker: "Player 2", text: res.data.agents["Player 2"], avatar: "🤖" },
-]);
+
+      setHistory([
+        { speaker: "Player 1", text: res.data.agents["Player 1"], avatar: "🤖" },
+        { speaker: "Player 2", text: res.data.agents["Player 2"], avatar: "🤖" },
+      ]);
 
       speakText(res.data.agents["Player 1"]);
-speakText(res.data.agents["Player 2"]);
+      speakText(res.data.agents["Player 2"]);
 
       if (audioRef.current) audioRef.current.pause();
       setFlash(false);
@@ -123,31 +113,27 @@ speakText(res.data.agents["Player 2"]);
   };
 
   const handleUserSpeech = async (userSpeech) => {
-    // append user's speech to history first
     setHistory((prev) => [...prev, { speaker: "You", text: userSpeech, avatar: "👤" }]);
     setLoadingAI(true);
 
     try {
-     const ai = await axios.post(`${import.meta.env.VITE_API_URL}/api/gd`, {
-  userSpeech,
-  topic,
-  history: history.map(h => ({
-    ...h,
-    speaker: h.speaker.replace("Agent", "Player"),
-  })),
-});
+      const ai = await axios.post(`${import.meta.env.VITE_API_URL}/api/gd`, {
+        userSpeech,
+        topic,
+        history: history.map((h) => ({
+          ...h,
+          speaker: h.speaker.replace("Agent", "Player"),
+        })),
+      });
 
-setHistory((prev) => [
-  ...prev,
-  { speaker: "Player 1", text: ai.data["Player 1"], avatar: "🤖" },
-  { speaker: "Player 2", text: ai.data["Player 2"], avatar: "🤖" },
-]);
+      setHistory((prev) => [
+        ...prev,
+        { speaker: "Player 1", text: ai.data["Player 1"], avatar: "🤖" },
+        { speaker: "Player 2", text: ai.data["Player 2"], avatar: "🤖" },
+      ]);
 
-speakText(ai.data["Player 1"]);
-speakText(ai.data["Player 2"]);
-
-
-
+      speakText(ai.data["Player 1"]);
+      speakText(ai.data["Player 2"]);
     } catch (error) {
       console.error("Failed to get AI response:", error);
     } finally {
@@ -155,108 +141,92 @@ speakText(ai.data["Player 2"]);
     }
   };
 
-  // Start continuous recognition. We add a small restart mechanism so browser auto-stops
-  // on silence will be restarted — this ensures recognition stays ON until user presses STOP.
- const startSpeaking = () => {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    alert("Speech recognition is not supported in your browser.");
-    return;
-  }
-
-  // ✨ IMPORTANT FIX: Stop agent TTS immediately
-  window.speechSynthesis.cancel();
-
-  // Also stop background music so user has clean audio
-  if (audioRef.current) {
-    audioRef.current.pause();
-  }
-
-  // Reset old recognition
-  transcriptRef.current = "";
-  if (recognitionRef.current) {
-    try {
-      recognitionRef.current._shouldRestart = false;
-      recognitionRef.current.onend = null;
-      recognitionRef.current.onerror = null;
-      recognitionRef.current.stop();
-    } catch (e) {}
-    recognitionRef.current = null;
-  }
-
-  const recognition = new SR();
-  recognitionRef.current = recognition;
-
-  recognition.lang = "en-US";
-  recognition.interimResults = true;
-  recognition.continuous = true;
-  recognition.maxAlternatives = 1;
-  recognition._shouldRestart = true;
-
-  recognition.onresult = (e) => {
-    for (let i = 0; i < e.results.length; i++) {
-      const result = e.results[i];
-      if (result.isFinal) {
-        transcriptRef.current =
-          (transcriptRef.current + " " + result[0].transcript).trim();
-      }
+  // 🔥 NEW FIXED SPEECH RECOGNITION (works like Google Assistant)
+  const startSpeaking = () => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      alert("Speech Recognition not supported.");
+      return;
     }
-  };
 
-  recognition.onerror = (ev) => {
-    console.error("Speech recognition error:", ev.error);
-  };
+    // STOP all speaking immediately
+    window.speechSynthesis.cancel();
+    if (audioRef.current) audioRef.current.pause();
 
-  recognition.onend = () => {
-    if (recognition._shouldRestart) {
+    fullSpeechRef.current = ""; // reset buffer
+
+    if (recognitionRef.current) {
       try {
-        recognition.start();
-      } catch (e) {
+        recognitionRef.current._shouldRestart = false;
+        recognitionRef.current.stop();
+      } catch (e) {}
+      recognitionRef.current = null;
+    }
+
+    const recognition = new SR();
+    recognitionRef.current = recognition;
+
+    recognition.lang = "en-US";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    recognition._shouldRestart = true;
+
+    recognition.onresult = (e) => {
+      for (let i = 0; i < e.results.length; i++) {
+        const result = e.results[i];
+        if (result.isFinal) {
+          fullSpeechRef.current =
+            (fullSpeechRef.current + " " + result[0].transcript).trim();
+        }
+      }
+    };
+
+    recognition.onerror = (ev) => {
+      console.error("Speech Recognition Error:", ev.error);
+    };
+
+    recognition.onend = () => {
+      if (recognition._shouldRestart) {
+        setTimeout(() => {
+          try {
+            recognition.start();
+          } catch (e) {}
+        }, 100);
+      } else {
         setListening(false);
       }
-    } else {
+    };
+
+    try {
+      recognition.start();
+      setListening(true);
+    } catch (e) {
+      console.error("Recognition start failed:", e);
       setListening(false);
     }
   };
 
-  try {
-    recognition.start();
-    setListening(true);
-  } catch (e) {
-    console.error("Failed to start recognition:", e);
-    setListening(false);
-  }
-};
-
-
-  // STOP listening — stops recognition and then sends accumulated transcript to AI
+  // STOP listening and send full speech
   const stopListening = () => {
     const recognition = recognitionRef.current;
     if (!recognition) return;
 
-    // tell the instance not to restart, then stop
     recognition._shouldRestart = false;
-
     try {
       recognition.stop();
-    } catch (e) {
-      // ignore
-    }
+    } catch (e) {}
 
-    // small delay to let onend finish and final results settle
     setTimeout(() => {
-      const final = transcriptRef.current.trim();
-      if (final) {
-        // send final transcript to AI
-        handleUserSpeech(final);
+      const finalSpeech = fullSpeechRef.current.trim();
+      if (finalSpeech.length > 0) {
+        handleUserSpeech(finalSpeech);
       }
-      // clear
-      transcriptRef.current = "";
+      fullSpeechRef.current = "";
       recognitionRef.current = null;
       setListening(false);
-    }, 250);
+    }, 300);
   };
-
   return (
     <div
       className={`relative min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-hidden ${
