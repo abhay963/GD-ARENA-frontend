@@ -13,6 +13,7 @@ export default function App() {
   const [shake, setShake] = useState(false);
   const [flash, setFlash] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+const [showHowToPlay, setShowHowToPlay] = useState(false);
 
   const audioRef = useRef(null);
   const chatEndRef = useRef(null);
@@ -68,12 +69,7 @@ export default function App() {
     }
   };
 
-  const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
+  
 
   const handleStartCountdown = () => {
     setCountdown(3);
@@ -257,32 +253,144 @@ export default function App() {
       )}
 
       <div className="relative z-10 min-h-screen flex flex-col">
-        <header className="border-b border-red-900/30 backdrop-blur-sm bg-black/20">
-          <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-            <div
-  className="flex items-center gap-3 cursor-pointer"
-  onClick={() => {
-    stopAllAudio();
-    setStep("enter");
-  }}
+       <header className="border-b border-red-900/30 backdrop-blur-sm bg-black/20">
+  <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+
+    {/* LEFT SIDE — LOGO */}
+    <div
+      className="flex items-center gap-3 cursor-pointer"
+      onClick={() => {
+        stopAllAudio();
+        setStep("enter");
+      }}
+    >
+      <FaSkull className="text-3xl text-red-500 animate-pulse" />
+      <h1 className="text-2xl font-black tracking-wider bg-gradient-to-r from-red-500 to-red-700 
+                    bg-clip-text text-transparent cursor-pointer">
+        GD ARENA
+      </h1>
+    </div>
+
+    
+<button
+  onClick={() => setShowHowToPlay(true)}
+  className="
+    relative px-6 py-3 rounded-xl font-bold text-lg tracking-wide 
+    text-red-300 cursor-pointer overflow-hidden
+    transition-all duration-300
+    group
+  "
+  
 >
-  <FaSkull className="text-3xl text-red-500 animate-pulse" />
-  <h1 className="text-2xl font-black tracking-wider bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent cursor-pointer">
-    GD ARENA
-  </h1>
+  
+  {/* Glowing background pulse */}
+  <span className="absolute inset-0 bg-red-700/40 group-hover:bg-red-700/80 
+                   rounded-xl blur-sm transition-all duration-300 animate-dangerPulse"></span>
+
+  {/* Electric border animation */}
+  <span className="absolute inset-0 rounded-xl border-2 border-red-600 
+                   group-hover:border-red-400 animate-electricBorder"></span>
+
+ 
+
+  {/* Main text */}
+  <span className="relative z-10">HOW TO PLAY</span>
+</button>
+
+
+  
+  </div>
+</header>
+
+
+ {/* HOW TO PLAY GAMING MODAL */}
+{/* HOW TO PLAY — RED DANGER CYBER MODAL */}
+{showHowToPlay && (
+  <div className="fixed inset-0 flex items-center justify-center z-[999] overflow-hidden">
+    
+    {/* Dark Overlay */}
+    <div className="absolute inset-0 bg-black/80 backdrop-blur-xl animate-dangerFade"></div>
+
+    {/* Floating red lights */}
+    <div className="absolute w-80 h-80 bg-red-600/20 blur-[120px] rounded-full animate-pulseSlow top-10 left-10"></div>
+    <div className="absolute w-96 h-96 bg-red-800/30 blur-[150px] rounded-full animate-pulseSlow2 bottom-10 right-10"></div>
+
+    {/* MODAL CARD */}
+    <div className="relative w-full max-w-2xl p-[3px] rounded-2xl bg-gradient-to-br 
+                    from-red-700 to-red-900 shadow-[0_0_60px_rgba(255,0,0,0.7)]
+                    animate-dangerPop">
+
+      {/* Inner panel */}
+      <div className="relative bg-black/90 rounded-2xl p-10 overflow-hidden">
+
+        {/* SCANLINE EFFECT */}
+        <div className="absolute inset-0 pointer-events-none opacity-20 bg-[linear-gradient(rgba(255,0,0,0.1)_1px,transparent_1px)] 
+                        bg-[length:100%_4px] animate-scanlines"></div>
+
+        {/* CLOSE BUTTON */}
+        <button
+          onClick={() => setShowHowToPlay(false)}
+          className="absolute top-5 right-5 text-red-500 hover:text-red-300 
+                     text-3xl font-black animate-glitch cursor-pointer"
+        >
+          ✖
+        </button>
+
+        {/* TITLE */}
+        <h2 className="text-5xl font-black text-center tracking-widest text-red-500 
+                       drop-shadow-[0_0_15px_red] mb-10 animate-glowPulse">
+          HOW TO PLAY
+        </h2>
+
+        {/* STEPS */}
+        <div className="space-y-8">
+
+  {[
+  ["①", "ENTER PLAYGROUND — Begin your interactive session."],
+  ["②", "PRESS ENTER — The system prepares your environment."],
+  ["③", "COUNTDOWN STARTS — Getting everything ready for you."],
+  ["④", "TOPIC GENERATED — AI participants join the discussion."],
+  ["⑤", "SPEAK & SUBMIT — Share your points, then press STOP."]
+]
+.map(([num, text], i) => (
+    
+    <div
+      key={i}
+      className="flex gap-6 items-start animate-stepReveal relative"
+      style={{ animationDelay: `${i * 0.25}s` }}
+    >
+      
+      {/* NUMBER BADGE */}
+      <span className="text-red-500 text-5xl font-black drop-shadow-[0_0_20px_red] animate-numberPulse">
+        {num}
+      </span>
+
+      {/* TEXT BLOCK */}
+      <div className="flex-1">
+        <p className="text-red-400 font-bold text-xl tracking-widest animate-glitchFlicker">
+          {text.split(" — ")[0]}
+        </p>
+
+        <p className="text-gray-300 mt-2 text-[15px] animate-holoSlide">
+          {text.split(" — ")[1]}
+        </p>
+      </div>
+
+      {/* ELECTRIC SHOCK LINE ON EACH STEP */}
+      <div className="absolute left-0 -bottom-2 w-full h-[2px] bg-red-800/40 overflow-hidden">
+        <div className="h-full w-full bg-red-500 animate-electricZap"></div>
+      </div>
+    </div>
+
+  ))}
+
 </div>
 
+      </div>
+    </div>
+  </div>
+)}
 
-            {step === "audio" && (
-              <button
-                onClick={toggleMute}
-                className="p-2 rounded-lg bg-red-900/20 hover:bg-red-900/30 transition-colors"
-              >
-                {isMuted ? <FaVolumeMute className="text-xl" /> : <FaVolumeUp className="text-xl" />}
-              </button>
-            )}
-          </div>
-        </header>
 
         <main className="flex-1 container mx-auto px-6 py-8 flex items-center justify-center">
           <div className="w-full max-w-4xl">
@@ -482,6 +590,91 @@ export default function App() {
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: linear-gradient(to bottom, #dc2626, #7f1d1d);
         }
+
+/* Red pulsing glow */
+@keyframes dangerPulse {
+  0% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+  100% { opacity: 0.4; transform: scale(1); }
+}
+.animate-dangerPulse {
+  animation: dangerPulse 2s infinite ease-in-out;
+}
+
+/* Electric border moving animation */
+@keyframes electricBorder {
+  0% { box-shadow: 0 0 5px red; }
+  50% { box-shadow: 0 0 20px rgba(255,0,0,0.8); }
+  100% { box-shadow: 0 0 5px red; }
+}
+.animate-electricBorder {
+  animation: electricBorder 1.8s infinite linear;
+}
+
+/* Glitching duplicate text */
+@keyframes glitchText {
+  0% { transform: translate(0,0); opacity: 0.2; }
+  20% { transform: translate(-2px,2px); opacity: 0.6; }
+  40% { transform: translate(2px,-2px); opacity: 0.4; }
+  60% { transform: translate(-1px,1px); opacity: 0.7; }
+  80% { transform: translate(1px,-1px); opacity: 0.5; }
+  100% { transform: translate(0,0); opacity: 0.2; }
+}
+.animate-glitchText {
+  animation: glitchText 0.25s infinite;
+}
+
+
+
+/* Each step reveal slide + fade */
+@keyframes stepReveal {
+  0% { opacity: 0; transform: translateX(-30px) scale(0.95); }
+  100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+.animate-stepReveal {
+  animation: stepReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Big pulsing SQUID GAME number */
+@keyframes numberPulse {
+  0%, 100% { transform: scale(1); text-shadow: 0 0 20px red; }
+  50% { transform: scale(1.2); text-shadow: 0 0 40px red; }
+}
+.animate-numberPulse {
+  animation: numberPulse 2s infinite ease-in-out;
+}
+
+/* Glitch flicker title */
+@keyframes glitchFlicker {
+  0% { opacity: 0.6; transform: skew(0deg); }
+  20% { opacity: 1; transform: skew(-2deg); }
+  40% { opacity: 0.8; transform: skew(2deg); }
+  60% { opacity: 1; transform: skew(-1deg); }
+  100% { opacity: 0.9; transform: skew(0deg); }
+}
+.animate-glitchFlicker {
+  animation: glitchFlicker 1.5s infinite;
+}
+
+/* Hologram sliding text */
+@keyframes holoSlide {
+  0% { opacity: 0; transform: translateX(20px); filter: blur(4px); }
+  100% { opacity: 1; transform: translateX(0); filter: blur(0); }
+}
+.animate-holoSlide {
+  animation: holoSlide 1.4s ease-out forwards;
+}
+
+/* Red electric zap line */
+@keyframes electricZap {
+  0% { transform: translateX(-100%); opacity: 0.3; }
+  100% { transform: translateX(100%); opacity: 1; }
+}
+.animate-electricZap {
+  animation: electricZap 1.2s infinite linear;
+}
+
+
       `}</style>
     </div>
   );
