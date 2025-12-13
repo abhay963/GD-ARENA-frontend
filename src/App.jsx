@@ -2,6 +2,15 @@ import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { FaMicrophone, FaSpinner, FaSkull, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import introMusic from "./audio/squid game music.mp3";
+import { useAuth } from "./hooks/useAuth";
+import Auth from "./components/Auth";
+import { signOut } from "firebase/auth";
+import { auth } from "./firebase";
+import { FaSignOutAlt } from "react-icons/fa";
+
+
+
+
 
 export default function App() {
   const [step, setStep] = useState("enter");
@@ -223,6 +232,30 @@ const [showHowToPlay, setShowHowToPlay] = useState(false);
       setListening(false);
     }, 300);
   };
+
+const handleLogout = async () => {
+  await signOut(auth);
+  stopAllAudio(); // optional, but good UX
+  setStep("enter");
+};
+
+
+  const { user, loading } = useAuth();
+
+if (loading) {
+  return <div className="text-white">Loading...</div>;
+}
+
+if (!user) {
+  return <Auth />;
+}
+
+
+
+
+
+
+
   return (
     <div
       className={`relative min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-hidden ${
@@ -253,7 +286,7 @@ const [showHowToPlay, setShowHowToPlay] = useState(false);
       )}
 
       <div className="relative z-10 min-h-screen flex flex-col">
-       <header className="border-b border-red-900/30 backdrop-blur-sm bg-black/20">
+      <header className="border-b border-red-900/30 backdrop-blur-sm bg-black/20">
   <div className="container mx-auto px-6 py-4 flex items-center justify-between">
 
     {/* LEFT SIDE — LOGO */}
@@ -265,40 +298,59 @@ const [showHowToPlay, setShowHowToPlay] = useState(false);
       }}
     >
       <FaSkull className="text-3xl text-red-500 animate-pulse" />
-      <h1 className="text-2xl font-black tracking-wider bg-gradient-to-r from-red-500 to-red-700 
-                    bg-clip-text text-transparent cursor-pointer">
+      <h1
+        className="text-2xl font-black tracking-wider bg-gradient-to-r 
+                   from-red-500 to-red-700 bg-clip-text text-transparent"
+      >
         GD ARENA
       </h1>
     </div>
 
-    
-<button
-  onClick={() => setShowHowToPlay(true)}
-  className="
-    relative px-6 py-3 rounded-xl font-bold text-lg tracking-wide 
-    text-red-300 cursor-pointer overflow-hidden
-    transition-all duration-300
-    group
-  "
-  
->
-  
-  {/* Glowing background pulse */}
-  <span className="absolute inset-0 bg-red-700/40 group-hover:bg-red-700/80 
-                   rounded-xl blur-sm transition-all duration-300 animate-dangerPulse"></span>
+    {/* CENTER — HOW TO PLAY */}
+    <button
+      onClick={() => setShowHowToPlay(true)}
+      className="
+        relative px-6 py-3 rounded-xl font-bold text-lg tracking-wide 
+        text-red-300 cursor-pointer overflow-hidden
+        transition-all duration-300 group
+      "
+    >
+      <span className="absolute inset-0 bg-red-700/40 group-hover:bg-red-700/80 
+                       rounded-xl blur-sm transition-all duration-300 animate-dangerPulse"></span>
 
-  {/* Electric border animation */}
-  <span className="absolute inset-0 rounded-xl border-2 border-red-600 
-                   group-hover:border-red-400 animate-electricBorder"></span>
+      <span className="absolute inset-0 rounded-xl border-2 border-red-600 
+                       group-hover:border-red-400 animate-electricBorder"></span>
 
- 
+      <span className="relative z-10">HOW TO PLAY</span>
+    </button>
 
-  {/* Main text */}
-  <span className="relative z-10">HOW TO PLAY</span>
-</button>
+    {/* RIGHT SIDE — USER + LOGOUT */}
+    <div className="flex items-center gap-4">
 
+      {/* USER EMAIL */}
+      <span className="text-sm text-gray-400 hidden md:block">
+        {user?.email}
+      </span>
 
-  
+      {/* LOGOUT ICON */}
+      <button
+        onClick={handleLogout}
+        title="Logout"
+        className="
+          flex items-center justify-center
+          w-10 h-10 rounded-full
+          border border-red-600/40
+          text-red-500
+          hover:bg-red-600/20 hover:text-red-300
+          transition-all duration-300
+          cursor-pointer
+        "
+      >
+        <FaSignOutAlt className="text-lg" />
+      </button>
+
+    </div>
+
   </div>
 </header>
 
