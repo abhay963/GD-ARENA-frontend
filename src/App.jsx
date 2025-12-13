@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { FaMicrophone, FaSpinner, FaSkull, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
+import { FaMicrophone, FaSpinner, FaSkull,  } from "react-icons/fa";
 import introMusic from "./audio/squid game music.mp3";
 import { useAuth } from "./hooks/useAuth";
 import Auth from "./components/Auth";
@@ -21,7 +21,6 @@ export default function App() {
   const [countdown, setCountdown] = useState(null);
   const [shake, setShake] = useState(false);
   const [flash, setFlash] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
 const [showHowToPlay, setShowHowToPlay] = useState(false);
 
   const audioRef = useRef(null);
