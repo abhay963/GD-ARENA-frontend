@@ -36,8 +36,7 @@ Designed to improve **confidence, clarity, and structured thinking**.
 Frontend : React (Vite)
 Backend : Node.js + Express
 
-yaml
-Copy code
+
 
 ---
 
