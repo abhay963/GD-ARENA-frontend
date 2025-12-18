@@ -5,7 +5,7 @@
 ### 🚀 AI-Powered Group Discussion Practice Platform  
 ### 🗣️ Speak Clearly | 🎯 Think Faster | 💼 Placement Ready
 
-<img src="https://media.giphy.com/media/eNAsjO55tPbgaor7ma/giphy.gif" width="420"/>
+<img src="https://media.giphy.com/media/2IudUHdI075HL02Pkk/giphy.gif" width="420"/>
 
 ---
 
