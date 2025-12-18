@@ -3,9 +3,9 @@
 # 🎤 GD Arena
 
 ### 🚀 AI-Powered Group Discussion Practice Platform  
-### 🗣️ Speak Better | 🎯 Think Faster | 💼 Placement Ready
+### 🗣️ Speak Clearly | 🎯 Think Faster | 💼 Placement Ready
 
-<img src="https://media.giphy.com/media/QssGEmpkyEOhBCb7e1/giphy.gif" width="420"/>
+<img src="https://media.giphy.com/media/eNAsjO55tPbgaor7ma/giphy.gif" width="420"/>
 
 ---
 
@@ -13,8 +13,8 @@
 👉 https://gd-arena-frontend-lzuk.vercel.app/
 
 ![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
-![Tech](https://img.shields.io/badge/Tech-Vite%20%7C%20React%20%7C%20Node%20%7C%20Express-blue?style=for-the-badge)
-![Focus](https://img.shields.io/badge/Focus-Group%20Discussion-orange?style=for-the-badge)
+![Stack](https://img.shields.io/badge/Stack-Vite%20%7C%20React%20%7C%20Node%20%7C%20Express-blue?style=for-the-badge)
+![Purpose](https://img.shields.io/badge/Purpose-GD%20Practice-orange?style=for-the-badge)
 
 </div>
 
@@ -22,12 +22,12 @@
 
 ## 📌 About
 
-**GD Arena** is a placement-focused web platform to practice **Group Discussions** using:
-- 🤖 AI-driven participants  
+**GD Arena** is a placement-focused platform to practice **Group Discussions** in a realistic environment using:
 - 🎯 Random GD topics  
+- 🤖 AI-driven participants  
 - 🗣️ Voice-based speaking practice  
 
-Built to improve **confidence, clarity, and communication skills**.
+Designed to improve **confidence, clarity, and structured thinking**.
 
 ---
 
