@@ -351,94 +351,159 @@ const handleExit = async () => {
       </div>
 
 {showStreakPopup && (
-  <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-xl">
-    
-    <div className="relative bg-gradient-to-br from-[#1a1a1a] via-[#161616] to-[#0f0f0f] 
-                    border border-[#2a2a2a]/50 shadow-2xl
-                    rounded-2xl px-10 py-8 w-[360px]
-                    text-center animate-streakPop overflow-hidden">
+  <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+    {/* Sophisticated backdrop with animated gradient */}
+    <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" />
+        <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse animation-delay-2000" />
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse animation-delay-4000" />
+      </div>
+    </div>
 
-      {/* SUBTLE BACKGROUND GRADIENT OVERLAY */}
-      <div className="absolute inset-0 bg-gradient-to-t from-orange-500/5 via-transparent to-transparent pointer-events-none" />
+    {/* Main popup container */}
+    <div className="relative animate-streakReveal">
+      {/* Glow effect */}
+      <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl blur-lg opacity-30 animate-pulse" />
       
-      {/* DECORATIVE CORNER ACCENT */}
-      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-500/20 to-transparent 
-                      rounded-bl-full opacity-50" />
+      {/* Card */}
+      <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl 
+                      border border-white/20 rounded-3xl p-8 w-[400px] shadow-2xl
+                      overflow-hidden group">
+        
+        {/* Shimmer effect */}
+        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r 
+                        from-transparent via-white/10 to-transparent 
+                        group-hover:translate-x-full transition-transform duration-1000" />
 
-      {/* FIRE ICON WITH GLOW */}
-      <div className="relative flex justify-center mb-5">
-        <div className="absolute inset-0 bg-orange-500/20 blur-xl scale-150" />
-        <div className="relative w-16 h-16 flex items-center justify-center 
-                        rounded-2xl bg-gradient-to-br from-orange-500/10 via-yellow-500/10 to-orange-500/10 
-                        border border-orange-500/20 backdrop-blur-sm">
-          <svg className="w-8 h-8 text-orange-400 drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/>
-          </svg>
+        {/* Floating particles background */}
+        <div className="absolute inset-0">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 bg-white/30 rounded-full animate-float"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${i * 0.5}s`,
+                animationDuration: `${3 + Math.random() * 2}s`
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10">
+          {/* Icon with sophisticated animation */}
+          <div className="flex justify-center mb-6">
+            <div className="relative animate-iconBounce">
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-pink-400 
+                              rounded-3xl blur-xl opacity-50 animate-pulse" />
+              <div className="relative w-20 h-20 rounded-3xl 
+                              bg-gradient-to-br from-orange-500 via-pink-500 to-purple-500 
+                              flex items-center justify-center shadow-lg">
+                <svg className="w-10 h-10 text-white drop-shadow-2xl" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Streak number with premium typography */}
+          <div className="mb-4">
+            <div className="flex items-baseline justify-center gap-2">
+              <span className="text-7xl font-black text-transparent bg-clip-text 
+                               bg-gradient-to-r from-white to-gray-300 
+                               leading-none animate-countUp">
+                {latestStreak}
+              </span>
+              <span className="text-2xl font-light text-gray-400 mb-2">/ ∞</span>
+            </div>
+            <p className="text-center text-xs font-bold text-gray-400 mt-2 
+                         uppercase tracking-[0.3em] letter-spacing-2">
+              Consecutive Days
+            </p>
+          </div>
+
+          {/* Premium message with typewriter effect */}
+          <div className="h-6 mb-6">
+            <p className="text-center text-gray-300 text-sm font-light 
+                         animate-fadeInUp animation-delay-300">
+              {latestStreak === 1 && "Your journey begins today 🔥"}
+              {latestStreak >= 2 && latestStreak <= 3 && "Building momentum, keep it up! ⚡"}
+              {latestStreak >= 4 && latestStreak <= 6 && "You're on fire! 🔥🔥"}
+              {latestStreak >= 7 && latestStreak <= 13 && "Unstoppable force! 💪"}
+              {latestStreak >= 14 && latestStreak <= 29 && "Legendary consistency! 👑"}
+              {latestStreak >= 30 && "You've achieved mastery! 🏆"}
+            </p>
+          </div>
+
+          {/* Sophisticated progress ring */}
+          <div className="flex justify-center mb-6">
+            <div className="relative w-32 h-32">
+              <svg className="transform -rotate-90 w-32 h-32">
+                <circle
+                  cx="64"
+                  cy="64"
+                  r="56"
+                  stroke="rgba(255,255,255,0.1)"
+                  strokeWidth="8"
+                  fill="none"
+                />
+                <circle
+                  cx="64"
+                  cy="64"
+                  r="56"
+                  stroke="url(#gradient)"
+                  strokeWidth="8"
+                  fill="none"
+                  strokeDasharray={`${2 * Math.PI * 56}`}
+                  strokeDashoffset={`${2 * Math.PI * 56 * (1 - Math.min(latestStreak / 10, 1))}`}
+                  className="transition-all duration-1500 ease-out"
+                  strokeLinecap="round"
+                />
+                <defs>
+                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#f97316" />
+                    <stop offset="50%" stopColor="#ec4899" />
+                    <stop offset="100%" stopColor="#8b5cf6" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-2xl font-bold text-white">
+                  {Math.min(latestStreak * 10, 100)}%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Achievement badges */}
+          <div className="flex justify-center gap-2">
+            {[
+              { threshold: 3, icon: '⚡', achieved: latestStreak >= 3 },
+              { threshold: 7, icon: '🔥', achieved: latestStreak >= 7 },
+              { threshold: 14, icon: '💎', achieved: latestStreak >= 14 },
+              { threshold: 30, icon: '👑', achieved: latestStreak >= 30 }
+            ].map((badge, i) => (
+              <div
+                key={i}
+                className={`w-10 h-10 rounded-full flex items-center justify-center text-lg
+                          transition-all duration-500 transform
+                          ${badge.achieved 
+                            ? 'bg-gradient-to-br from-orange-500/20 to-pink-500/20 scale-100' 
+                            : 'bg-gray-800/50 scale-75 opacity-30'}`}
+                style={{
+                  animationDelay: `${i * 100}ms`
+                }}
+              >
+                {badge.icon}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-
-      {/* STREAK COUNT WITH PREMIUM TYPOGRAPHY */}
-      <div className="mb-4">
-        <div className="relative inline-block">
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-yellow-400 blur-lg opacity-30" />
-          <h2 className="relative text-6xl font-black text-transparent bg-clip-text 
-                          bg-gradient-to-r from-orange-300 via-yellow-300 to-orange-300
-                          tracking-tighter leading-none">
-            {latestStreak}
-          </h2>
-        </div>
-        <p className="text-xs font-semibold text-gray-500 mt-2 uppercase tracking-[0.2em]">
-          Day Streak
-        </p>
-      </div>
-
-      {/* MESSAGE WITH BETTER TYPOGRAPHY */}
-      <p className="text-gray-400 text-sm font-light leading-relaxed px-3">
-        {latestStreak === 1 && "Nice start. Consistency begins today."}
-        {latestStreak >= 2 && latestStreak <= 3 && "You're building momentum."}
-        {latestStreak >= 4 && latestStreak <= 6 && "Strong consistency. Keep going."}
-        {latestStreak >= 7 && "Excellent discipline. Don't break the chain."}
-      </p>
-
-      {/* PREMIUM PROGRESS BAR */}
-      <div className="mt-7 space-y-3">
-        <div className="flex justify-between items-center">
-          <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</span>
-          <span className="text-xs font-bold text-orange-400">
-            {Math.min(latestStreak * 10, 100)}%
-          </span>
-        </div>
-        <div className="relative h-2 w-full bg-gray-800/50 rounded-full overflow-hidden backdrop-blur-sm">
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 blur-sm" />
-          <div
-            className="relative h-full bg-gradient-to-r from-orange-500 via-yellow-400 to-orange-400 
-                      rounded-full transition-all duration-1200 ease-out shadow-lg shadow-orange-500/25"
-            style={{ width: `${Math.min(latestStreak * 10, 100)}%` }}
-          />
-        </div>
-      </div>
-
-      {/* PREMIUM DECORATIVE ELEMENTS */}
-      <div className="mt-6 flex items-center justify-center space-x-2">
-        {[...Array(5)].map((_, i) => (
-          <div
-            key={i}
-            className={`h-1.5 w-1.5 rounded-full transition-all duration-500 ${
-              i < Math.min(Math.ceil(latestStreak / 2), 5)
-                ? 'bg-gradient-to-r from-orange-400 to-yellow-400 shadow-sm shadow-orange-400/50'
-                : 'bg-gray-700/50'
-            }`}
-            style={{
-              width: i < Math.min(Math.ceil(latestStreak / 2), 5) ? '12px' : '6px',
-              opacity: i < Math.min(Math.ceil(latestStreak / 2), 5) ? 1 : 0.3
-            }}
-          />
-        ))}
-      </div>
-
-      {/* SUBTLE GLOW EFFECT */}
-      <div className="absolute -bottom-px left-0 right-0 h-px bg-gradient-to-r 
-                      from-transparent via-orange-500/30 to-transparent" />
     </div>
   </div>
 )}
@@ -893,25 +958,87 @@ const handleExit = async () => {
 
 
 
+@keyframes streakReveal {
+    0% {
+      opacity: 0;
+      transform: scale(0.5) rotateY(90deg);
+      filter: blur(20px);
+    }
+    50% {
+      transform: scale(1.05) rotateY(0deg);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) rotateY(0deg);
+      filter: blur(0);
+    }
+  }
 
-@keyframes streakPop {
-  0% {
-    opacity: 0;
-    transform: scale(0.9) translateY(20px) rotateX(10deg);
+  @keyframes iconBounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    25% { transform: translateY(-10px) scale(1.1); }
+    50% { transform: translateY(0) scale(1); }
+    75% { transform: translateY(-5px) scale(1.05); }
   }
-  50% {
-    transform: scale(1.02) translateY(-5px) rotateX(0deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0) rotateX(0deg);
-  }
-}
 
-.animate-streakPop {
-  animation: streakPop 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-  transform-style: preserve-3d;
-}
+  @keyframes countUp {
+    from { 
+      opacity: 0; 
+      transform: translateY(20px) scale(0.5);
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% { 
+      transform: translateY(0) translateX(0);
+      opacity: 0;
+    }
+    10% { opacity: 0.3; }
+    90% { opacity: 0.3; }
+    50% { 
+      transform: translateY(-20px) translateX(10px);
+      opacity: 1;
+    }
+  }
+
+  .animate-streakReveal {
+    animation: streakReveal 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .animate-iconBounce {
+    animation: iconBounce 1.5s ease-in-out;
+  }
+
+  .animate-countUp {
+    animation: countUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+  }
+
+  .animate-fadeInUp {
+    animation: fadeInUp 0.5s ease-out both;
+  }
+
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .animation-delay-300 { animation-delay: 300ms; }
+  .animation-delay-2000 { animation-delay: 2s; }
+  .animation-delay-4000 { animation-delay: 4s; }
 
 
 
