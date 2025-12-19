@@ -320,7 +320,7 @@ const handleExit = async () => {
       setTimeout(() => {
         setShowStreakPopup(false);
         setStep("enter");
-      }, 6000);
+      }, 7000);
     } else {
       // ❌ Same day → no popup
       setStep("enter");
