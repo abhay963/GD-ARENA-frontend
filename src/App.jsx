@@ -320,7 +320,7 @@ const handleExit = async () => {
       setTimeout(() => {
         setShowStreakPopup(false);
         setStep("enter");
-      }, 7000);
+      }, 2500);
     } else {
       // ❌ Same day → no popup
       setStep("enter");
@@ -350,163 +350,195 @@ const handleExit = async () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
       </div>
 
+
 {showStreakPopup && (
-  <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-    {/* Sophisticated backdrop with animated gradient */}
-    <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" />
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse animation-delay-2000" />
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse animation-delay-4000" />
-      </div>
-    </div>
+  <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-xl">
+    <div className="relative bg-gradient-to-br from-[#1a1a1a] via-[#161616] to-[#0f0f0f] 
+                    border border-[#2a2a2a]/50 shadow-2xl
+                    rounded-2xl px-10 py-8 w-[360px]
+                    text-center animate-streakPop overflow-hidden">
 
-    {/* Main popup container */}
-    <div className="relative animate-streakReveal">
-      {/* Glow effect */}
-      <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl blur-lg opacity-30 animate-pulse" />
+      {/* ANIMATED BACKGROUND GRADIENT OVERLAY */}
+      <div className="absolute inset-0 bg-gradient-to-t from-orange-500/5 via-transparent to-transparent 
+                      opacity-70 animate-pulse pointer-events-none" />
       
-      {/* Card */}
-      <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl 
-                      border border-white/20 rounded-3xl p-8 w-[400px] shadow-2xl
-                      overflow-hidden group">
+      {/* ANIMATED SHIMMER EFFECT */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent 
+                        animate-shimmer" style={{ animationDuration: '3s' }} />
+      </div>
+
+      {/* DECORATIVE CORNER ACCENTS WITH ANIMATION */}
+      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-500/20 to-transparent 
+                      rounded-bl-full animate-pulse" style={{ animationDuration: '2s' }} />
+      <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-yellow-500/15 to-transparent 
+                      rounded-tr-full animate-pulse" style={{ animationDuration: '2.5s', animationDelay: '0.5s' }} />
+
+      
+
+      {/* ENHANCED ANIMATED FIRE ICON WITH GROWING/SHRINKING EFFECT */}
+      <div className="relative flex justify-center mb-5">
+      
+      
         
-        {/* Shimmer effect */}
-        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r 
-                        from-transparent via-white/10 to-transparent 
-                        group-hover:translate-x-full transition-transform duration-1000" />
-
-        {/* Floating particles background */}
-        <div className="absolute inset-0">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-white/30 rounded-full animate-float"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${i * 0.5}s`,
-                animationDuration: `${3 + Math.random() * 2}s`
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10">
-          {/* Icon with sophisticated animation */}
-          <div className="flex justify-center mb-6">
-            <div className="relative animate-iconBounce">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-pink-400 
-                              rounded-3xl blur-xl opacity-50 animate-pulse" />
-              <div className="relative w-20 h-20 rounded-3xl 
-                              bg-gradient-to-br from-orange-500 via-pink-500 to-purple-500 
-                              flex items-center justify-center shadow-lg">
-                <svg className="w-10 h-10 text-white drop-shadow-2xl" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-              </div>
+        {/* Fire container with breathing animation */}
+        <div className="relative w-20 h-20 flex items-center justify-center 
+                        rounded-3xl bg-gradient-to-br from-orange-500/15 via-yellow-500/15 to-orange-500/15 
+                        border border-orange-500/30 backdrop-blur-sm"
+             style={{ animation: 'fireBreathe 1.5s ease-in-out infinite' }}>
+          
+          {/* Entry animation for the entire fire container */}
+          <div className="absolute inset-0 flex items-center justify-center"
+               style={{ animation: 'fireEntry 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)' }}>
+            
+            {/* Large outer fire layer - main breathing effect */}
+            <svg className="absolute w-12 h-12 text-orange-500 drop-shadow-lg" 
+                 fill="currentColor" viewBox="0 0 24 24" 
+                 style={{ animation: 'fireBreathe 1.2s ease-in-out infinite' }}>
+              <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/>
+            </svg>
+            
+            {/* Medium fire layer - secondary breathing */}
+            <svg className="absolute w-10 h-10 text-yellow-400 drop-shadow-md" 
+                 fill="currentColor" viewBox="0 0 24 24" 
+                 style={{ animation: 'fireGrow 1s ease-in-out infinite', animationDelay: '0.2s' }}>
+              <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/>
+            </svg>
+            
+            {/* Small inner fire layer - fast flickering */}
+            <svg className="absolute w-7 h-7 text-orange-300 drop-shadow-sm" 
+                 fill="currentColor" viewBox="0 0 24 24" 
+                 style={{ animation: 'fireFlicker 0.4s ease-in-out infinite', animationDelay: '0.1s' }}>
+              <path d="M12 2c0 0-2 3-2 5 0 1.1.9 2 2 2s2-.9 2-2c0-2-2-5-2-5zm0 7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 4c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4z"/>
+            </svg>
+            
+            {/* Dynamic fire particles with growing effect */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+              <div className="w-3 h-3 bg-gradient-to-t from-orange-500 to-yellow-400 rounded-full" 
+                   style={{ 
+                     animation: 'fireBlow 1s ease-in-out infinite',
+                     boxShadow: '0 0 10px rgba(251, 146, 60, 0.8)'
+                   }} />
             </div>
-          </div>
-
-          {/* Streak number with premium typography */}
-          <div className="mb-4">
-            <div className="flex items-baseline justify-center gap-2">
-              <span className="text-7xl font-black text-transparent bg-clip-text 
-                               bg-gradient-to-r from-white to-gray-300 
-                               leading-none animate-countUp">
-                {latestStreak}
-              </span>
-              <span className="text-2xl font-light text-gray-400 mb-2">/ ∞</span>
+            <div className="absolute -top-2 left-1/3">
+              <div className="w-2 h-2 bg-gradient-to-t from-orange-400 to-yellow-300 rounded-full" 
+                   style={{ 
+                     animation: 'fireBlow 1.2s ease-in-out infinite', 
+                     animationDelay: '0.3s',
+                     boxShadow: '0 0 8px rgba(251, 191, 36, 0.8)'
+                   }} />
             </div>
-            <p className="text-center text-xs font-bold text-gray-400 mt-2 
-                         uppercase tracking-[0.3em] letter-spacing-2">
-              Consecutive Days
-            </p>
-          </div>
-
-          {/* Premium message with typewriter effect */}
-          <div className="h-6 mb-6">
-            <p className="text-center text-gray-300 text-sm font-light 
-                         animate-fadeInUp animation-delay-300">
-              {latestStreak === 1 && "Your journey begins today 🔥"}
-              {latestStreak >= 2 && latestStreak <= 3 && "Building momentum, keep it up! ⚡"}
-              {latestStreak >= 4 && latestStreak <= 6 && "You're on fire! 🔥🔥"}
-              {latestStreak >= 7 && latestStreak <= 13 && "Unstoppable force! 💪"}
-              {latestStreak >= 14 && latestStreak <= 29 && "Legendary consistency! 👑"}
-              {latestStreak >= 30 && "You've achieved mastery! 🏆"}
-            </p>
-          </div>
-
-          {/* Sophisticated progress ring */}
-          <div className="flex justify-center mb-6">
-            <div className="relative w-32 h-32">
-              <svg className="transform -rotate-90 w-32 h-32">
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
-                  stroke="rgba(255,255,255,0.1)"
-                  strokeWidth="8"
-                  fill="none"
-                />
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
-                  stroke="url(#gradient)"
-                  strokeWidth="8"
-                  fill="none"
-                  strokeDasharray={`${2 * Math.PI * 56}`}
-                  strokeDashoffset={`${2 * Math.PI * 56 * (1 - Math.min(latestStreak / 10, 1))}`}
-                  className="transition-all duration-1500 ease-out"
-                  strokeLinecap="round"
-                />
-                <defs>
-                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#f97316" />
-                    <stop offset="50%" stopColor="#ec4899" />
-                    <stop offset="100%" stopColor="#8b5cf6" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">
-                  {Math.min(latestStreak * 10, 100)}%
-                </span>
-              </div>
+            <div className="absolute -top-2 right-1/3">
+              <div className="w-2.5 h-2.5 bg-gradient-to-t from-yellow-400 to-orange-300 rounded-full" 
+                   style={{ 
+                     animation: 'fireBlow 0.8s ease-in-out infinite', 
+                     animationDelay: '0.5s',
+                     boxShadow: '0 0 12px rgba(251, 146, 60, 0.9)'
+                   }} />
             </div>
-          </div>
-
-          {/* Achievement badges */}
-          <div className="flex justify-center gap-2">
-            {[
-              { threshold: 3, icon: '⚡', achieved: latestStreak >= 3 },
-              { threshold: 7, icon: '🔥', achieved: latestStreak >= 7 },
-              { threshold: 14, icon: '💎', achieved: latestStreak >= 14 },
-              { threshold: 30, icon: '👑', achieved: latestStreak >= 30 }
-            ].map((badge, i) => (
-              <div
-                key={i}
-                className={`w-10 h-10 rounded-full flex items-center justify-center text-lg
-                          transition-all duration-500 transform
-                          ${badge.achieved 
-                            ? 'bg-gradient-to-br from-orange-500/20 to-pink-500/20 scale-100' 
-                            : 'bg-gray-800/50 scale-75 opacity-30'}`}
-                style={{
-                  animationDelay: `${i * 100}ms`
-                }}
-              >
-                {badge.icon}
-              </div>
-            ))}
+            
+            {/* Additional floating embers */}
+            <div className="absolute top-0 left-1/4">
+              <div className="w-1 h-1 bg-orange-400 rounded-full" 
+                   style={{ 
+                     animation: 'fireBlow 1.5s ease-in-out infinite', 
+                     animationDelay: '0.7s'
+                   }} />
+            </div>
+            <div className="absolute top-1 right-1/4">
+              <div className="w-1.5 h-1.5 bg-yellow-300 rounded-full" 
+                   style={{ 
+                     animation: 'fireBlow 1.3s ease-in-out infinite', 
+                     animationDelay: '0.9s'
+                   }} />
+            </div>
           </div>
         </div>
       </div>
+
+      {/* STREAK COUNT WITH ENHANCED GLOW */}
+      <div className="mb-4">
+        <div className="relative inline-block">
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-yellow-400 blur-lg 
+                          animate-pulse opacity-40" style={{ animationDuration: '2s' }} />
+          <h2 className="relative text-6xl font-black text-transparent bg-clip-text 
+                          bg-gradient-to-r from-orange-300 via-yellow-300 to-orange-300
+                          tracking-tighter leading-none"
+              style={{
+                backgroundSize: '200% 200%',
+                animation: 'gradientShift 3s ease infinite'
+              }}>
+            {latestStreak}
+          </h2>
+        </div>
+        <p className="text-xs font-semibold text-gray-500 mt-2 uppercase tracking-[0.2em]">
+          Day Streak
+        </p>
+      </div>
+
+      {/* MESSAGE WITH SUBTLE ANIMATION */}
+      <p className="text-gray-400 text-sm font-light leading-relaxed px-3 opacity-0 
+                    animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}>
+        {latestStreak === 1 && "Nice start. Consistency begins today."}
+        {latestStreak >= 2 && latestStreak <= 3 && "You're building momentum."}
+        {latestStreak >= 4 && latestStreak <= 6 && "Strong consistency. Keep going."}
+        {latestStreak >= 7 && "Excellent discipline. Don't break the chain."}
+      </p>
+
+      {/* ENHANCED PROGRESS BAR WITH ANIMATION */}
+      <div className="mt-7 space-y-3">
+        <div className="flex justify-between items-center">
+          <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</span>
+          <span className="text-xs font-bold text-orange-400 animate-pulse">
+            {Math.min(latestStreak * 10, 100)}%
+          </span>
+        </div>
+        <div className="relative h-2 w-full bg-gray-800/50 rounded-full overflow-hidden backdrop-blur-sm">
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 blur-sm 
+                          animate-pulse" style={{ animationDuration: '1.5s' }} />
+          <div
+            className="relative h-full bg-gradient-to-r from-orange-500 via-yellow-400 to-orange-400 
+                      rounded-full transition-all duration-1200 ease-out shadow-lg shadow-orange-500/25"
+            style={{ 
+              width: `${Math.min(latestStreak * 10, 100)}%`,
+              backgroundSize: '200% 100%',
+              animation: 'gradientShift 2s ease infinite'
+            }}
+          />
+          {/* Progress bar shimmer */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent 
+                          animate-shimmer rounded-full" style={{ animationDuration: '2s' }} />
+        </div>
+      </div>
+
+      {/* ENHANCED DECORATIVE DOTS */}
+      <div className="mt-6 flex items-center justify-center space-x-2">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className={`h-1.5 rounded-full transition-all duration-500 ${
+              i < Math.min(Math.ceil(latestStreak / 2), 5)
+                ? 'bg-gradient-to-r from-orange-400 to-yellow-400 shadow-sm shadow-orange-400/50 animate-pulse'
+                : 'bg-gray-700/50'
+            }`}
+            style={{
+              width: i < Math.min(Math.ceil(latestStreak / 2), 5) ? '12px' : '6px',
+              opacity: i < Math.min(Math.ceil(latestStreak / 2), 5) ? 1 : 0.3,
+              animationDelay: `${i * 0.1}s`,
+              animationDuration: '1.5s'
+            }}
+          />
+        ))}
+      </div>
+
+      {/* ANIMATED BOTTOM GLOW */}
+      <div className="absolute -bottom-px left-0 right-0 h-px bg-gradient-to-r 
+                      from-transparent via-orange-500/50 to-transparent animate-pulse" 
+           style={{ animationDuration: '2s' }} />
     </div>
   </div>
 )}
+
 
 
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
@@ -958,88 +990,117 @@ const handleExit = async () => {
 
 
 
-@keyframes streakReveal {
-    0% {
-      opacity: 0;
-      transform: scale(0.5) rotateY(90deg);
-      filter: blur(20px);
-    }
-    50% {
-      transform: scale(1.05) rotateY(0deg);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1) rotateY(0deg);
-      filter: blur(0);
-    }
+
+@keyframes streakPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px) rotateX(10deg);
   }
-
-  @keyframes iconBounce {
-    0%, 100% { transform: translateY(0) scale(1); }
-    25% { transform: translateY(-10px) scale(1.1); }
-    50% { transform: translateY(0) scale(1); }
-    75% { transform: translateY(-5px) scale(1.05); }
+  50% {
+    transform: scale(1.02) translateY(-5px) rotateX(0deg);
   }
-
-  @keyframes countUp {
-    from { 
-      opacity: 0; 
-      transform: translateY(20px) scale(0.5);
-    }
-    to { 
-      opacity: 1; 
-      transform: translateY(0) scale(1);
-    }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotateX(0deg);
   }
+}
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+@keyframes fireBreathe {
+  0%, 100% { 
+    transform: scale(1) rotate(-2deg); 
+    filter: brightness(1);
   }
-
-  @keyframes float {
-    0%, 100% { 
-      transform: translateY(0) translateX(0);
-      opacity: 0;
-    }
-    10% { opacity: 0.3; }
-    90% { opacity: 0.3; }
-    50% { 
-      transform: translateY(-20px) translateX(10px);
-      opacity: 1;
-    }
+  25% { 
+    transform: scale(1.15) rotate(1deg); 
+    filter: brightness(1.2);
   }
-
-  .animate-streakReveal {
-    animation: streakReveal 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  50% { 
+    transform: scale(0.95) rotate(2deg); 
+    filter: brightness(0.9);
   }
-
-  .animate-iconBounce {
-    animation: iconBounce 1.5s ease-in-out;
+  75% { 
+    transform: scale(1.1) rotate(-1deg); 
+    filter: brightness(1.1);
   }
+}
 
-  .animate-countUp {
-    animation: countUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+@keyframes fireGrow {
+  0%, 100% { 
+    transform: scale(1) translateY(0); 
+    opacity: 1;
   }
-
-  .animate-fadeInUp {
-    animation: fadeInUp 0.5s ease-out both;
+  25% { 
+    transform: scale(1.3) translateY(-2px); 
+    opacity: 0.9;
   }
-
-  .animate-float {
-    animation: float 4s ease-in-out infinite;
+  50% { 
+    transform: scale(0.85) translateY(1px); 
+    opacity: 1;
   }
+  75% { 
+    transform: scale(1.2) translateY(-1px); 
+    opacity: 0.95;
+  }
+}
 
-  .animation-delay-300 { animation-delay: 300ms; }
-  .animation-delay-2000 { animation-delay: 2s; }
-  .animation-delay-4000 { animation-delay: 4s; }
+@keyframes fireFlicker {
+  0%, 100% { transform: scale(1) rotate(-2deg); }
+  25% { transform: scale(1.05) rotate(1deg); }
+  50% { transform: scale(0.98) rotate(2deg); }
+  75% { transform: scale(1.03) rotate(-1deg); }
+}
 
+@keyframes fireBlow {
+  0%, 100% { transform: translateY(0) scaleY(1); opacity: 1; }
+  50% { transform: translateY(-4px) scaleY(1.2); opacity: 0.7; }
+}
+
+@keyframes fireGlow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.4); }
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-60px) rotate(360deg); opacity: 0; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes fireEntry {
+  0% {
+    transform: scale(0) rotate(180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.3) rotate(90deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.animate-streakPop {
+  animation: streakPop 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transform-style: preserve-3d;
+}
 
 
       `}</style>
