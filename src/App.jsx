@@ -13,6 +13,12 @@ import { FaSignOutAlt } from "react-icons/fa";
 
 
 export default function App() {
+    const { user, loading } = useAuth();
+
+  // ✅ THEN states
+  const [streak, setStreak] = useState(0);
+  const [lastShownStreak, setLastShownStreak] = useState(0);
+
   const [step, setStep] = useState("enter");
   const [topic, setTopic] = useState("");
   const [history, setHistory] = useState([]);
@@ -21,14 +27,43 @@ export default function App() {
   const [countdown, setCountdown] = useState(null);
   const [shake, setShake] = useState(false);
   const [flash, setFlash] = useState(false);
+
+const [showStreakPopup, setShowStreakPopup] = useState(false);
+const [latestStreak, setLatestStreak] = useState(0);
+
+
 const [showHowToPlay, setShowHowToPlay] = useState(false);
+const recognitionTimerRef = useRef(null);
+ 
+
+
 
   const audioRef = useRef(null);
   const chatEndRef = useRef(null);
 
   // Speech recognition references
   const recognitionRef = useRef(null);
-  const fullSpeechRef = useRef(""); // 🔥 stores entire speech safely
+  const fullSpeechRef = useRef(""); // 🔥 sores entire speech safely
+
+
+
+
+useEffect(() => {
+  if (!user) return;
+
+  axios
+    .get(`${import.meta.env.VITE_API_URL}/api/streak/${user.uid}`)
+    .then(res => {
+      setStreak(res.data.streak);
+      setLastShownStreak(res.data.streak); // ✅ sync baseline
+    })
+    .catch(console.error);
+
+}, [user?.uid]);
+
+
+
+
 
   // Scroll to bottom every time history updates
   useEffect(() => {
@@ -146,91 +181,101 @@ const [showHowToPlay, setShowHowToPlay] = useState(false);
   };
 
   // 🔥 NEW FIXED SPEECH RECOGNITION (works like Google Assistant)
-  const startSpeaking = () => {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) {
-      alert("Speech Recognition not supported.");
-      return;
-    }
+const startSpeaking = () => {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    alert("Speech Recognition not supported.");
+    return;
+  }
 
-    // STOP all speaking immediately
-    window.speechSynthesis.cancel();
-    if (audioRef.current) audioRef.current.pause();
+  // HARD RESET EVERYTHING
+  window.speechSynthesis.cancel();
+  if (audioRef.current) audioRef.current.pause();
 
-    fullSpeechRef.current = ""; // reset buffer
+  fullSpeechRef.current = "";
 
-    if (recognitionRef.current) {
-      try {
-        recognitionRef.current._shouldRestart = false;
-        recognitionRef.current.stop();
-      } catch (e) {}
-      recognitionRef.current = null;
-    }
+  if (recognitionRef.current) {
+    try {
+      recognitionRef.current.onend = null;
+      recognitionRef.current.onerror = null;
+      recognitionRef.current.stop();
+    } catch {}
+    recognitionRef.current = null;
+  }
 
-    const recognition = new SR();
-    recognitionRef.current = recognition;
+  const recognition = new SR();
+  recognitionRef.current = recognition;
 
-    recognition.lang = "en-US";
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
-    recognition._shouldRestart = true;
+  recognition.lang = "en-US";
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
 
-    recognition.onresult = (e) => {
-      for (let i = 0; i < e.results.length; i++) {
-        const result = e.results[i];
-        if (result.isFinal) {
-          fullSpeechRef.current =
-            (fullSpeechRef.current + " " + result[0].transcript).trim();
-        }
+  recognition.onresult = (e) => {
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) {
+        fullSpeechRef.current += " " + e.results[i][0].transcript;
       }
-    };
+    }
+  };
 
-    recognition.onerror = (ev) => {
-      console.error("Speech Recognition Error:", ev.error);
-    };
+  recognition.onerror = (e) => {
+    console.error("Speech error:", e.error);
+    stopListening(); // HARD STOP on error
+  };
 
-    recognition.onend = () => {
-      if (recognition._shouldRestart) {
-        setTimeout(() => {
-          try {
-            recognition.start();
-          } catch (e) {}
-        }, 100);
-      } else {
+  recognition.onend = () => {
+    // DO NOT restart if user stopped
+    if (listening) {
+      try {
+        recognition.start();
+      } catch {
         setListening(false);
       }
-    };
-
-    try {
-      recognition.start();
-      setListening(true);
-    } catch (e) {
-      console.error("Recognition start failed:", e);
-      setListening(false);
     }
   };
 
-  // STOP listening and send full speech
-  const stopListening = () => {
-    const recognition = recognitionRef.current;
-    if (!recognition) return;
+  try {
+    recognition.start();
+    setListening(true);
+  } catch (e) {
+    console.error("Start failed:", e);
+    setListening(false);
+  }
 
-    recognition._shouldRestart = false;
-    try {
-      recognition.stop();
-    } catch (e) {}
+  // 🔥 HARD AUTO-REFRESH every 4 minutes
+  recognitionTimerRef.current = setTimeout(() => {
+    stopListening();
+  }, 4 * 60 * 1000);
+};
 
-    setTimeout(() => {
-      const finalSpeech = fullSpeechRef.current.trim();
-      if (finalSpeech.length > 0) {
-        handleUserSpeech(finalSpeech);
-      }
-      fullSpeechRef.current = "";
-      recognitionRef.current = null;
-      setListening(false);
-    }, 300);
-  };
+
+  
+const stopListening = () => {
+  if (recognitionTimerRef.current) {
+    clearTimeout(recognitionTimerRef.current);
+    recognitionTimerRef.current = null;
+  }
+
+  const recognition = recognitionRef.current;
+  if (!recognition) return;
+
+  try {
+    recognition.onend = null;
+    recognition.onerror = null;
+    recognition.stop();
+  } catch {}
+
+  setTimeout(() => {
+    const speech = fullSpeechRef.current.trim();
+    if (speech) handleUserSpeech(speech);
+
+    fullSpeechRef.current = "";
+    recognitionRef.current = null;
+    setListening(false);
+  }, 300);
+};
+
 
 const handleLogout = async () => {
   await signOut(auth);
@@ -239,7 +284,7 @@ const handleLogout = async () => {
 };
 
 
-  const { user, loading } = useAuth();
+  
 
 if (loading) {
   return <div className="text-white">Loading...</div>;
@@ -248,6 +293,44 @@ if (loading) {
 if (!user) {
   return <Auth />;
 }
+
+
+const handleExit = async () => {
+  stopAllAudio();
+
+  try {
+    const res = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/streak/update`,
+      {
+        uid: user.uid,
+        email: user.email,
+      }
+    );
+
+    const newStreak = res.data.streak;
+
+    setStreak(newStreak);
+
+    // ✅ SHOW POPUP ONLY IF STREAK INCREASED
+    if (newStreak > lastShownStreak) {
+      setLatestStreak(newStreak);
+      setShowStreakPopup(true);
+      setLastShownStreak(newStreak);
+
+      setTimeout(() => {
+        setShowStreakPopup(false);
+        setStep("enter");
+      }, 2500);
+    } else {
+      // ❌ Same day → no popup
+      setStep("enter");
+    }
+
+  } catch (err) {
+    console.error(err);
+    setStep("enter");
+  }
+};
 
 
 
@@ -266,6 +349,100 @@ if (!user) {
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl opacity-10 animate-pulse"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
       </div>
+
+{showStreakPopup && (
+  <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-xl">
+    
+    <div className="relative bg-gradient-to-br from-[#1a1a1a] via-[#161616] to-[#0f0f0f] 
+                    border border-[#2a2a2a]/50 shadow-2xl
+                    rounded-2xl px-10 py-8 w-[360px]
+                    text-center animate-streakPop overflow-hidden">
+
+      {/* SUBTLE BACKGROUND GRADIENT OVERLAY */}
+      <div className="absolute inset-0 bg-gradient-to-t from-orange-500/5 via-transparent to-transparent pointer-events-none" />
+      
+      {/* DECORATIVE CORNER ACCENT */}
+      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-500/20 to-transparent 
+                      rounded-bl-full opacity-50" />
+
+      {/* FIRE ICON WITH GLOW */}
+      <div className="relative flex justify-center mb-5">
+        <div className="absolute inset-0 bg-orange-500/20 blur-xl scale-150" />
+        <div className="relative w-16 h-16 flex items-center justify-center 
+                        rounded-2xl bg-gradient-to-br from-orange-500/10 via-yellow-500/10 to-orange-500/10 
+                        border border-orange-500/20 backdrop-blur-sm">
+          <svg className="w-8 h-8 text-orange-400 drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/>
+          </svg>
+        </div>
+      </div>
+
+      {/* STREAK COUNT WITH PREMIUM TYPOGRAPHY */}
+      <div className="mb-4">
+        <div className="relative inline-block">
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-yellow-400 blur-lg opacity-30" />
+          <h2 className="relative text-6xl font-black text-transparent bg-clip-text 
+                          bg-gradient-to-r from-orange-300 via-yellow-300 to-orange-300
+                          tracking-tighter leading-none">
+            {latestStreak}
+          </h2>
+        </div>
+        <p className="text-xs font-semibold text-gray-500 mt-2 uppercase tracking-[0.2em]">
+          Day Streak
+        </p>
+      </div>
+
+      {/* MESSAGE WITH BETTER TYPOGRAPHY */}
+      <p className="text-gray-400 text-sm font-light leading-relaxed px-3">
+        {latestStreak === 1 && "Nice start. Consistency begins today."}
+        {latestStreak >= 2 && latestStreak <= 3 && "You're building momentum."}
+        {latestStreak >= 4 && latestStreak <= 6 && "Strong consistency. Keep going."}
+        {latestStreak >= 7 && "Excellent discipline. Don't break the chain."}
+      </p>
+
+      {/* PREMIUM PROGRESS BAR */}
+      <div className="mt-7 space-y-3">
+        <div className="flex justify-between items-center">
+          <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</span>
+          <span className="text-xs font-bold text-orange-400">
+            {Math.min(latestStreak * 10, 100)}%
+          </span>
+        </div>
+        <div className="relative h-2 w-full bg-gray-800/50 rounded-full overflow-hidden backdrop-blur-sm">
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 blur-sm" />
+          <div
+            className="relative h-full bg-gradient-to-r from-orange-500 via-yellow-400 to-orange-400 
+                      rounded-full transition-all duration-1200 ease-out shadow-lg shadow-orange-500/25"
+            style={{ width: `${Math.min(latestStreak * 10, 100)}%` }}
+          />
+        </div>
+      </div>
+
+      {/* PREMIUM DECORATIVE ELEMENTS */}
+      <div className="mt-6 flex items-center justify-center space-x-2">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className={`h-1.5 w-1.5 rounded-full transition-all duration-500 ${
+              i < Math.min(Math.ceil(latestStreak / 2), 5)
+                ? 'bg-gradient-to-r from-orange-400 to-yellow-400 shadow-sm shadow-orange-400/50'
+                : 'bg-gray-700/50'
+            }`}
+            style={{
+              width: i < Math.min(Math.ceil(latestStreak / 2), 5) ? '12px' : '6px',
+              opacity: i < Math.min(Math.ceil(latestStreak / 2), 5) ? 1 : 0.3
+            }}
+          />
+        ))}
+      </div>
+
+      {/* SUBTLE GLOW EFFECT */}
+      <div className="absolute -bottom-px left-0 right-0 h-px bg-gradient-to-r 
+                      from-transparent via-orange-500/30 to-transparent" />
+    </div>
+  </div>
+)}
+
 
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
 
@@ -323,32 +500,37 @@ if (!user) {
       <span className="relative z-10">HOW TO PLAY</span>
     </button>
 
-    {/* RIGHT SIDE — USER + LOGOUT */}
-    <div className="flex items-center gap-4">
 
-      {/* USER EMAIL */}
-      <span className="text-sm text-gray-400 hidden md:block">
-        {user?.email}
-      </span>
 
-      {/* LOGOUT ICON */}
-      <button
-        onClick={handleLogout}
-        title="Logout"
-        className="
-          flex items-center justify-center
-          w-10 h-10 rounded-full
-          border border-red-600/40
-          text-red-500
-          hover:bg-red-600/20 hover:text-red-300
-          transition-all duration-300
-          cursor-pointer
-        "
-      >
-        <FaSignOutAlt className="text-lg" />
-      </button>
 
-    </div>
+
+<div className="flex items-center gap-4">
+
+  {/* STREAK BADGE */}
+  <div className="flex items-center gap-2 px-3 py-1 rounded-full 
+                  bg-yellow-500/10 border border-yellow-500/30">
+    <span className="text-yellow-400 font-bold">
+      🔥 {streak}
+    </span>
+    <span className="text-xs text-yellow-300">day streak</span>
+  </div>
+
+  <span className="text-sm text-gray-400 hidden md:block">
+    {user?.email}
+  </span>
+
+  <button onClick={handleLogout}>
+    <FaSignOutAlt />
+  </button>
+</div>
+
+
+
+
+
+
+
+   
 
   </div>
 </header>
@@ -489,21 +671,7 @@ if (!user) {
 
             {step === "gd" && (
               <div className="space-y-6 animate-fade-in relative">
-                {/* EXIT button (right side) */}
-                <div className="absolute top-6 right-6">
-                  <div className="absolute top-6 right-6">
-  <button
-    onClick={() => {
-      stopAllAudio();
-      setStep("enter");
-    }}
-    className="px-4 py-2 bg-red-700 hover:bg-red-800 rounded-xl text-white font-bold shadow-lg transition cursor-pointer"
-  >
-    EXIT
-  </button>
-</div>
-
-                </div>
+               
 
                 <div className="bg-gradient-to-r from-red-900/20 to-purple-900/20 backdrop-blur-sm border border-red-900/50 rounded-2xl p-6 shadow-2xl">
                   <div className="flex items-center gap-3 mb-3">
@@ -534,14 +702,12 @@ if (!user) {
 
   {/* EXIT BUTTON (NEW) */}
   <button
-    onClick={() => {
-      stopAllAudio();
-      setStep("enter");
-    }}
-    className="cursor-pointer px-6 py-3 bg-red-700 hover:bg-red-800 rounded-xl text-white font-bold shadow-lg transition"
-  >
-    EXIT
-  </button>
+  onClick={handleExit}
+  className="cursor-pointer px-6 py-3 bg-red-700 hover:bg-red-800 rounded-xl text-white font-bold shadow-lg transition"
+>
+  EXIT
+</button>
+
 
   {/* AGENTS PROCESSING */}
   {loadingAI && (
@@ -724,6 +890,29 @@ if (!user) {
 .animate-electricZap {
   animation: electricZap 1.2s infinite linear;
 }
+
+
+
+
+@keyframes streakPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px) rotateX(10deg);
+  }
+  50% {
+    transform: scale(1.02) translateY(-5px) rotateX(0deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotateX(0deg);
+  }
+}
+
+.animate-streakPop {
+  animation: streakPop 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transform-style: preserve-3d;
+}
+
 
 
       `}</style>
