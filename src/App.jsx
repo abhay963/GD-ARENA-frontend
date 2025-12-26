@@ -861,9 +861,39 @@ const handleExit = async () => {
 
               </div>
             )}
+            
           </div>
         </main>
+        
       </div>
+
+   <span
+  className="
+    fixed bottom-5 right-5 
+    z-[99999]       /* 🚀 always on top */
+    inline-block
+    px-6 py-3 rounded-full
+    bg-gradient-to-r from-slate-900 to-slate-800
+    border border-white/10
+    shadow-xl
+    transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]
+  "
+>
+  <span className="inline-flex items-center gap-2">
+
+    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block"></span>
+
+    <span className="text-gray-300 text-xs tracking-wider uppercase">
+      Developed by
+    </span>
+
+    <span className="text-white font-bold">Abhay</span>
+
+    <span className="text-red-400">♥</span>
+  </span>
+
+  <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></span>
+</span>
 
       <style jsx>{`
         @keyframes fade-in {

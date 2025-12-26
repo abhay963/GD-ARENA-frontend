@@ -1,5 +1,9 @@
 @import "tailwindcss";
 /* 🌑 DARK FEAR BACKGROUND */
+body {
+  overflow: hidden;
+}
+
 .fear-bg {
   background: radial-gradient(circle at 50% 50%, #4a0000, #000000 75%);
   background-size: 200% 200%;
