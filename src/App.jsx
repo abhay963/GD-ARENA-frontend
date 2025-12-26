@@ -867,11 +867,11 @@ const handleExit = async () => {
         
       </div>
 
-  <span
+<span
   className="
     fixed bottom-4 right-4 
     z-[99999]
-    inline-block
+    flex items-center      /* center content vertically */
     px-3 py-1.5 rounded-full
     bg-gradient-to-r from-slate-900 to-slate-800
     border border-white/10
@@ -879,22 +879,20 @@ const handleExit = async () => {
     transition-all duration-200 hover:shadow-lg hover:scale-[1.01]
   "
 >
-  <span className="inline-flex items-center gap-1.5">
+  <span className="flex items-center gap-2 leading-none">
 
-    <span className="w-1 h-1 rounded-full bg-green-400 animate-pulse inline-block"></span>
+    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
 
-    <span className="text-gray-400 text-[10px] tracking-wider uppercase">
+    <span className="text-gray-400 text-[10px] tracking-wider uppercase leading-none">
       Developed by
     </span>
 
-    <span className="text-white text-xs font-semibold">
+    <span className="text-white text-xs font-semibold leading-none">
       Abhay
     </span>
 
-    <span className="text-red-400 text-xs">♥</span>
+    <span className="text-red-400 text-xs leading-none">♥</span>
   </span>
-
-  <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"></span>
 </span>
 
 
