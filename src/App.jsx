@@ -867,33 +867,36 @@ const handleExit = async () => {
         
       </div>
 
-   <span
+  <span
   className="
-    fixed bottom-5 right-5 
-    z-[99999]       /* 🚀 always on top */
+    fixed bottom-4 right-4 
+    z-[99999]
     inline-block
-    px-6 py-3 rounded-full
+    px-3 py-1.5 rounded-full
     bg-gradient-to-r from-slate-900 to-slate-800
     border border-white/10
-    shadow-xl
-    transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]
+    shadow-md
+    transition-all duration-200 hover:shadow-lg hover:scale-[1.01]
   "
 >
-  <span className="inline-flex items-center gap-2">
+  <span className="inline-flex items-center gap-1.5">
 
-    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block"></span>
+    <span className="w-1 h-1 rounded-full bg-green-400 animate-pulse inline-block"></span>
 
-    <span className="text-gray-300 text-xs tracking-wider uppercase">
+    <span className="text-gray-400 text-[10px] tracking-wider uppercase">
       Developed by
     </span>
 
-    <span className="text-white font-bold">Abhay</span>
+    <span className="text-white text-xs font-semibold">
+      Abhay
+    </span>
 
-    <span className="text-red-400">♥</span>
+    <span className="text-red-400 text-xs">♥</span>
   </span>
 
-  <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></span>
+  <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"></span>
 </span>
+
 
       <style jsx>{`
         @keyframes fade-in {
