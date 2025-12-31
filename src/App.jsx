@@ -8,6 +8,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import { FaSignOutAlt } from "react-icons/fa";
 
+import StreakCalendar from "./components/StreakCalendar";
 
 
 
@@ -36,6 +37,7 @@ const [showHowToPlay, setShowHowToPlay] = useState(false);
 const recognitionTimerRef = useRef(null);
  
 
+const [showCalendar, setShowCalendar] = useState(false);
 
 
   const audioRef = useRef(null);
@@ -603,14 +605,19 @@ const handleExit = async () => {
 
 <div className="flex items-center gap-4">
 
-  {/* STREAK BADGE */}
-  <div className="flex items-center gap-2 px-3 py-1 rounded-full 
-                  bg-yellow-500/10 border border-yellow-500/30">
-    <span className="text-yellow-400 font-bold">
-      🔥 {streak}
-    </span>
-    <span className="text-xs text-yellow-300">day streak</span>
-  </div>
+<div
+  onClick={() => setShowCalendar(true)}
+  className="cursor-pointer flex items-center gap-2 px-3 py-1 rounded-full 
+             bg-yellow-500/10 border border-yellow-500/30 hover:bg-yellow-500/20 transition"
+>
+  <span className="text-yellow-400 font-bold">🔥 {streak}</span>
+  <span className="text-xs text-yellow-300">day streak</span>
+</div>
+{showCalendar && (
+  <StreakCalendar streak={streak} onClose={() => setShowCalendar(false)} />
+)}
+
+
 
   <span className="text-sm text-gray-400 hidden md:block">
     {user?.email}
