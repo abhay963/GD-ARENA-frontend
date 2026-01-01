@@ -898,7 +898,7 @@ const handleExit = async () => {
       Abhay
     </span>
 
-    <span className="text-red-400 text-xs leading-none">♥</span>
+  
   </span>
 </span>
 
